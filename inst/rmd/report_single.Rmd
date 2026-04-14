@@ -122,5 +122,7 @@ double_results$length_plot
 double_results$qscore_plot
 ```
 
-
-
+## Pore activity heatmap
+```{r, echo=FALSE}
+pore(params$data)
+```
