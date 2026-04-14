@@ -122,5 +122,20 @@ double_results$length_plot
 double_results$qscore_plot
 ```
 
+## Pore activity heatmap
+This panel presents two complementary views of nanopore channel activity throughout the sequencing run. The upper heatmap displays the number of bases sequenced per channel over time, with each column representing a single channel and each row corresponding to a one-hour interval. The lower heatmap maps the total output of each channel onto the physical layout of the flow cell, reflecting the spatial distribution of sequencing activity across the membrane. Together, these visualizations allow for the identification of underperforming or inactive channels, spatial clustering of pore degradation, and potential flow cell defects. A uniform distribution of activity across both time and space is indicative of a high-quality flow cell and a well-prepared library.
+```{r, echo=FALSE}
+pore_activity_heatmap(params$data)
+```
 
 
+<hr style="border: none; border-top: 2px solid #612a78; margin-top: 60px;">
+
+<p style="font-family: Arial; font-size: 12px; color: #888888;">
+This report was generated on `r format(Sys.time(), '%d %B %Y')` using R `r R.version$major`.`r R.version$minor`.
+</p>
+
+```{r sessionInfo, eval=TRUE, echo=FALSE, comment=NA}
+options(width = 100)
+utils:::print.sessionInfo(sessionInfo()[-7], locale = FALSE)
+```
