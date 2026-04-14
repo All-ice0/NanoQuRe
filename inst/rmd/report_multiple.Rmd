@@ -89,3 +89,10 @@ htmltools::tagList(lapply(samples_split, function(s) {
 }))
 ```
 
+
+
+## Pore activity heatmap
+```{r, echo=FALSE}
+htmltools::tagList(lapply(samples_split, pore))
+```
+
