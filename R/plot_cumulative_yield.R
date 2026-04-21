@@ -5,9 +5,8 @@
 #'
 #' @param seq_summary A dataframe containing the sequencing summary
 #'
-#' @returns ggplot2 object
+#' @returns plotly object
 #' @import dplyr
-#' @import ggplot2
 #' @export
 #'
 #' @examples
