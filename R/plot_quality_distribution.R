@@ -56,6 +56,12 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
   
   bins <- seq(-0.1, 15.1, by = binwidth)
   
+  # Basecaller-defined boundary: dynamic, not hardcoded — robust to ONT changes
+  basecaller_boundary <- max(
+    seq_summary$mean_qscore_template[seq_summary$passes_filtering == FALSE],
+    na.rm = TRUE
+  )
+  
   pass_data <- seq_summary %>%
     dplyr::filter(passes_filtering == TRUE) %>%
     dplyr::mutate(bin = cut(mean_qscore_template, breaks = bins,
@@ -78,8 +84,8 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
       y             = ~n,
       name          = "Fail",
       marker        = list(
-        color = "#D62728",          # brick red — colorblind friendly
-        line  = list(width = 0)     # fix: no border — removes uneven edge rendering
+        color = "#D62728",
+        line  = list(width = 0)
       ),
       hovertemplate = "Q score: %{x:.2f}<br>Count: %{y}<extra>Fail</extra>"
     ) %>%
@@ -90,21 +96,41 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
       name          = "Pass",
       marker        = list(
         color = "#0072B2",
-        line  = list(width = 0)     # fix: no border
+        line  = list(width = 0)
       ),
       hovertemplate = "Q score: %{x:.2f}<br>Count: %{y}<extra>Pass</extra>"
     ) %>%
+    # User-defined cutoff — set by the researcher for downstream analysis
     plotly::add_lines(
       x             = c(qscore_cutoff, qscore_cutoff),
       y             = c(0, max_y),
-      name          = paste0("Q score cut-off: ", qscore_cutoff),
-      line          = list(color = "#E69F00", width = 2.5),
-      hovertemplate = paste0("Cut-off: ", qscore_cutoff, "<extra></extra>")
+      name          = paste0("User-defined cut-off: Q", qscore_cutoff),
+      line          = list(color = "#E69F00", width = 2.5, dash = "dash"),
+      hovertemplate = paste0(
+        "User-defined cut-off: Q", qscore_cutoff,
+        "<br>Reads below basecaller threshold but above this line<br>",
+        "may be recoverable for analysis.<extra></extra>"
+      )
+    ) %>%
+    # Basecaller boundary — derived from data, not hardcoded
+    plotly::add_lines(
+      x             = c(basecaller_boundary, basecaller_boundary),
+      y             = c(0, max_y),
+      name          = paste0("Basecaller threshold: Q", round(basecaller_boundary, 2)),
+      line          = list(color = "#612a78", width = 2.5),
+      hovertemplate = paste0(
+        "Basecaller pass/fail boundary: Q", round(basecaller_boundary, 2),
+        "<extra></extra>"
+      )
     ) %>%
     plotly::layout(
       barmode = "stack",
       title = list(
-        text = paste0("<b>", sample_name, "</b>"),
+        text = paste0(
+          "<b>", sample_name, "</b><br>",
+          "<span style='font-size:11px; color:#666666;'>",
+          "</span>"
+        ),
         x    = 0.5,
         font = list(size = 15, color = "#333333", family = "Arial")
       ),
@@ -135,8 +161,10 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
         y           = 0.95
       )
     ) %>%
-    # Toolbar appears only on hover — disappears when mouse leaves the plot
     plotly::config(displayModeBar = "hover")
   
   return(qual_plot)
 }
+
+p1 <- plot_quality_distribution(ligase_ela)
+p1
