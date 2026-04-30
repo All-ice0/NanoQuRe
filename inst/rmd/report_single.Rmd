@@ -123,6 +123,23 @@ double_results$qscore_plot
 ```
 
 ## Pore activity heatmap
+This visualization consists of two complementary heatmaps providing a spatial and temporal perspective on flow cell performance. The upper panel displays per-channel sequencing activity over time (in hours), where color intensity represents the total number of bases produced by each channel within a given time window. This allows identification of channels that became inactive — diagnostic of pore blockage, strand stalling, or progressive membrane degradation. The lower panel maps the same per-channel total yield onto the physical layout of the flow cell, reflecting the actual spatial arrangement of nanopores on the membrane. Uneven spatial distribution of activity may indicate local flow cell defects, suboptimal library loading, or air bubble interference during priming.
 ```{r, echo=FALSE}
 pore_activity_heatmap(params$data)
 ```
+
+
+
+## Reproducibility
+
+This report has been created using **`Rmarkdown`** and publicly available **`R`** packages for reproducibility. For clarity the **`R`** packages used, and their versions, is listed below.
+
+<details>
+<summary style="cursor:pointer; color:#612a78; font-weight:bold;">&#128269; Show session info</summary>
+
+```{r sessionInfo, eval=TRUE, echo=FALSE, comment=NA}
+options(width = 100)
+utils:::print.sessionInfo(sessionInfo()[-7], locale=FALSE)
+```
+
+</details>

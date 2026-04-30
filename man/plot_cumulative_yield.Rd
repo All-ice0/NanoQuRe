@@ -10,7 +10,7 @@ plot_cumulative_yield(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-ggplot2 object
+plotly object
 
 plotly object
 }
