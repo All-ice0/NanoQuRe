@@ -165,6 +165,3 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
   
   return(qual_plot)
 }
-
-p1 <- plot_quality_distribution(ligase_ela)
-p1
