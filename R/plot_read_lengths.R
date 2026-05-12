@@ -4,11 +4,14 @@
 #'
 #' @param seq_summary A dataframe containing the sequencing summary
 #' @param upper_limit limit of x axis, default option is 4000
+#' @param y_limit Upper limit of the y axis. If NULL (default), automatically
+#'   set to the 99.9th percentile of read counts multiplied by 1.1.
 #'
 #' @returns ggplot2 object
 #' @import ggplot2
 #' @import dplyr
 #' @importFrom assertthat assert_that
+#' @importFrom stats quantile
 #' @export
 #'
 #' @examples
@@ -23,7 +26,9 @@ plot_read_lengths <- function(seq_summary, upper_limit = 4000, y_limit = NULL) {
   assertthat::assert_that(is.numeric(seq_summary$sequence_length_template),
                           msg = "Column 'sequence_length_template' must be numeric")
   
-  upper_limit <- as.numeric(upper_limit)
+  # bug fix: suppress the base R coercion warning so assertthat's message is
+  # the only signal reaching the caller
+  upper_limit <- suppressWarnings(as.numeric(upper_limit))
   assertthat::assert_that(!is.na(upper_limit), msg = "upper_limit must be a number")
   
   # --- Data prep ---

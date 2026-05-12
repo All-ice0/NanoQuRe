@@ -1,16 +1,3 @@
-#'Plot Cumulative Yield
-#'
-#'Generates a cumulative plot containing the number of sequenced bases in Gb over time in hours sorted by pass/fail filtering status.
-#'
-#'
-#' @param seq_summary A dataframe containing the sequencing summary
-#'
-#' @returns plotly object
-#' @import dplyr
-#' @export
-#'
-#' @examples
-#' NULL
 #' Plot Cumulative Yield
 #'
 #' Generates an interactive cumulative plot containing the number of sequenced
@@ -79,7 +66,7 @@ plot_cumulative_yield <- function(seq_summary) {
       y             = ~bases_gb,
       name          = "Pass",
       line          = list(color = "#0072B2", width = 2.5),
-      hovertemplate = "Time: %{x:.2f} h<br>Yield: %{y:.3f} Gb<extra>Pass</extra>"
+      hovertemplate = "Time: %{x:.2f} h Yield: %{y:.3f} Gb<extra>Pass</extra>"
     ) %>%
     plotly::add_lines(
       data          = fail_cum,
@@ -87,7 +74,7 @@ plot_cumulative_yield <- function(seq_summary) {
       y             = ~bases_gb,
       name          = "Fail",
       line          = list(color = "#D62728", width = 2.5),
-      hovertemplate = "Time: %{x:.2f} h<br>Yield: %{y:.3f} Gb<extra>Fail</extra>"
+      hovertemplate = "Time: %{x:.2f} h Yield: %{y:.3f} Gb<extra>Fail</extra>"
     ) %>%
     plotly::layout(
       title = list(

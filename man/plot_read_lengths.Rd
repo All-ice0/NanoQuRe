@@ -10,6 +10,9 @@ plot_read_lengths(seq_summary, upper_limit = 4000, y_limit = NULL)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 
 \item{upper_limit}{limit of x axis, default option is 4000}
+
+\item{y_limit}{Upper limit of the y axis. If NULL (default), automatically
+set to the 99.9th percentile of read counts multiplied by 1.1.}
 }
 \value{
 ggplot2 object

@@ -11,18 +11,11 @@ plot_cumulative_yield(seq_summary)
 }
 \value{
 plotly object
-
-plotly object
 }
 \description{
-Generates a cumulative plot containing the number of sequenced bases in Gb over time in hours sorted by pass/fail filtering status.
-}
-\examples{
-NULL
-Plot Cumulative Yield
-
 Generates an interactive cumulative plot containing the number of sequenced
 bases in Gb over time in hours sorted by pass/fail filtering status.
-
+}
+\examples{
 NULL
 }

@@ -1,19 +1,4 @@
 #' Plot Quality Distribution
-#' Generates a plot with number of reads of each length and their average quality score Q score sorted by pass/fail filtering status. Vertical line represents Q score cut-off which is by default equal to 7.
-#'
-#'
-#' @param seq_summary A dataframe containing the sequencing summary
-#' @param qscore_cutoff Numeric parameter of Qscore cut-off
-#'
-#' @returns ggplot2 object
-#' @import ggplot2
-#' @import dplyr
-#' @importFrom assertthat assert_that
-#' @export
-#'
-#' @examples
-#' NULL
-#' Plot Quality Distribution
 #'
 #' Generates an interactive plot with number of reads at each Q score sorted
 #' by pass/fail filtering status. Vertical line represents Q score cut-off
@@ -57,10 +42,13 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
   bins <- seq(-0.1, 15.1, by = binwidth)
   
   # Basecaller-defined boundary: dynamic, not hardcoded — robust to ONT changes
-  basecaller_boundary <- max(
-    seq_summary$mean_qscore_template[seq_summary$passes_filtering == FALSE],
-    na.rm = TRUE
-  )
+  fail_scores <- seq_summary$mean_qscore_template[seq_summary$passes_filtering == FALSE]
+  
+  basecaller_boundary <- if (length(fail_scores) > 0) {
+    max(fail_scores, na.rm = TRUE)
+  } else {
+    0  # no fail reads present; boundary line is hidden at 0
+  }
   
   pass_data <- seq_summary %>%
     dplyr::filter(passes_filtering == TRUE) %>%
@@ -126,11 +114,7 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
     plotly::layout(
       barmode = "stack",
       title = list(
-        text = paste0(
-          "<b>", sample_name, "</b><br>",
-          "<span style='font-size:11px; color:#666666;'>",
-          "</span>"
-        ),
+        text = paste0("<b>", sample_name, "</b>"),
         x    = 0.5,
         font = list(size = 15, color = "#333333", family = "Arial")
       ),

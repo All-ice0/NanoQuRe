@@ -21,10 +21,8 @@ Imports:
     assertthat,
     dplyr,
     ggplot2,
-    readr, 
     rmarkdown,
     scales, 
-    DT,
     plotly, 
     data.table
 Suggests:

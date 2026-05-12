@@ -8,6 +8,7 @@
 #'
 #' @returns plotly object
 #' @import dplyr
+#' @importFrom data.table data.table
 #' @importFrom plotly plot_ly add_trace layout subplot
 #' @importFrom assertthat assert_that
 #' @export
@@ -68,11 +69,14 @@ pore_activity_heatmap <- function(seq_summary, platform = "minion") {
   bins <- seq(from = 0, to = max(rescaled), by = time)
   
   if (platform == "minion") {
-    n_channels <- 512
-    layout     <- getMinIONChannelMap()
-  } else {
-    n_channels <- 3000
-    layout     <- getPromethIONChannelMap()
+    n_channels<-512
+    layout<-getMinIONChannelMap()
+  } else if (platform == "promethion")  {
+    n_channels<-3000
+    layout<-getPromethIONChannelMap()
+    
+  } else { #unknown platform
+    stop("[",Sys.time(),"]"," wrong platform specified. Choose either minion or promethion")
   }
   
   # --- Channel activity matrices ---
