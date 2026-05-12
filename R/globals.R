@@ -13,5 +13,14 @@ utils::globalVariables(c(
   "pass_status",
   "n",
   "n_50_value",
-  "number_of_reads"
+  "number_of_reads", 
+  "channel",
+  "template_unix", 
+  "last_activity", 
+  "event", 
+  "channel_no_start", 
+  "inactive_channels",
+  "hour",
+  "min_length",
+  "bin"
 ))
