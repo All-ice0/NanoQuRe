@@ -4,17 +4,23 @@
 \alias{plot_active_channels}
 \title{Plot Active Channels}
 \usage{
-plot_active_channels(seq_summary)
+plot_active_channels(seq_summary, thresholds = c(0.5, 0.25))
 }
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}
+
+\item{thresholds}{Numeric vector of fractions at which to draw threshold
+lines. Defaults to c(0.50, 0.25).}
 }
 \value{
 plotly object
 }
 \description{
 Generates an interactive plot showing number of active channels during
-sequencing time.
+sequencing time. Vertical dashed lines mark the time point at which 50%
+and 25% of initial channels remain active, annotated with the crossing
+time in hours. If a threshold is not reached during the run, a warning
+annotation is displayed on the plot prompting closer inspection.
 }
 \examples{
 NULL

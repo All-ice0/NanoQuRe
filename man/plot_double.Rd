@@ -10,11 +10,7 @@ plot_double(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-A named list with two plotly objects:
-  \describe{
-    \item{length_plot}{Read length (bp) over time, y-axis on log scale}
-    \item{qscore_plot}{Mean Q-score over time}
-  }
+A named list with two plotly objects
 }
 \description{
 Generates two interactive plots showing read length and Q-score over

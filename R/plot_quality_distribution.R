@@ -2,7 +2,8 @@
 #'
 #' Generates an interactive plot with number of reads at each Q score sorted
 #' by pass/fail filtering status. Vertical line represents Q score cut-off
-#' which is by default equal to 7.
+#' which is by default equal to 7. The basecaller threshold line is only drawn
+#' when failing reads are present in the data.
 #'
 #' @param seq_summary A dataframe containing the sequencing summary
 #' @param qscore_cutoff Numeric parameter of Qscore cut-off
@@ -37,35 +38,34 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
   # --- Data prep ---
   sample_name <- dplyr::first(seq_summary$sample_id)
   binwidth    <- 0.15
-  max_y       <- nrow(seq_summary) * 0.05
+  bins        <- seq(-0.1, 15.1, by = binwidth)
   
-  bins <- seq(-0.1, 15.1, by = binwidth)
+  # y axis ceiling — 50% of total reads gives a readable scale in typical runs
+  max_y <- nrow(seq_summary) * 0.05
   
-  # Basecaller-defined boundary: dynamic, not hardcoded — robust to ONT changes
-  fail_scores <- seq_summary$mean_qscore_template[seq_summary$passes_filtering == FALSE]
+  # Bin all reads once, then split by pass/fail
+  binned <- seq_summary %>%
+    dplyr::mutate(
+      bin     = cut(mean_qscore_template, breaks = bins,
+                    right = FALSE, include.lowest = TRUE),
+      bin_mid = bins[as.integer(bin)] + binwidth / 2
+    )
   
-  basecaller_boundary <- if (length(fail_scores) > 0) {
-    max(fail_scores, na.rm = TRUE)
-  } else {
-    0  # no fail reads present; boundary line is hidden at 0
-  }
-  
-  pass_data <- seq_summary %>%
+  pass_data <- binned %>%
     dplyr::filter(passes_filtering == TRUE) %>%
-    dplyr::mutate(bin = cut(mean_qscore_template, breaks = bins,
-                            right = FALSE, include.lowest = TRUE)) %>%
-    dplyr::count(bin) %>%
-    dplyr::mutate(bin_mid = bins[as.integer(bin)] + binwidth / 2)
+    dplyr::count(bin, bin_mid)
   
-  fail_data <- seq_summary %>%
+  fail_data <- binned %>%
     dplyr::filter(passes_filtering == FALSE) %>%
-    dplyr::mutate(bin = cut(mean_qscore_template, breaks = bins,
-                            right = FALSE, include.lowest = TRUE)) %>%
-    dplyr::count(bin) %>%
-    dplyr::mutate(bin_mid = bins[as.integer(bin)] + binwidth / 2)
+    dplyr::count(bin, bin_mid)
+  
+  # Basecaller boundary — only computed when failing reads exist,
+  # guards against empty vector passed to max() returning -Inf
+  fail_scores         <- seq_summary$mean_qscore_template[seq_summary$passes_filtering == FALSE]
+  basecaller_boundary <- if (length(fail_scores) > 0) max(fail_scores, na.rm = TRUE) else NULL
   
   # --- Plot ---
-  qual_plot <- plotly::plot_ly() %>%
+  qual_plot <- suppressWarnings(plotly::plot_ly() %>%
     plotly::add_bars(
       data          = fail_data,
       x             = ~bin_mid,
@@ -100,17 +100,19 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
         "may be recoverable for analysis.<extra></extra>"
       )
     ) %>%
-    # Basecaller boundary — derived from data, not hardcoded
-    plotly::add_lines(
-      x             = c(basecaller_boundary, basecaller_boundary),
-      y             = c(0, max_y),
-      name          = paste0("Basecaller threshold: Q", round(basecaller_boundary, 2)),
-      line          = list(color = "#612a78", width = 2.5),
-      hovertemplate = paste0(
-        "Basecaller pass/fail boundary: Q", round(basecaller_boundary, 2),
-        "<extra></extra>"
+    # Basecaller boundary — only added when failing reads are present
+    { if (!is.null(basecaller_boundary))
+      plotly::add_lines(.,
+                        x             = c(basecaller_boundary, basecaller_boundary),
+                        y             = c(0, max_y),
+                        name          = paste0("Basecaller threshold: Q", round(basecaller_boundary, 2)),
+                        line          = list(color = "#612a78", width = 2.5),
+                        hovertemplate = paste0(
+                          "Basecaller pass/fail boundary: Q", round(basecaller_boundary, 2),
+                          "<extra></extra>"
+                        )
       )
-    ) %>%
+      else . } %>%
     plotly::layout(
       barmode = "stack",
       title = list(
@@ -121,7 +123,7 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
       xaxis = list(
         title     = list(text = "<b>Mean Q score of read</b>",
                          font = list(size = 13, family = "Arial")),
-        range     = c(0, 15),
+        range     = c(-0.1, 15),
         showgrid  = TRUE,
         gridcolor = "#e0e0e0",
         tickfont  = list(size = 11, family = "Arial", color = "#333333")
@@ -129,7 +131,6 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
       yaxis = list(
         title     = list(text = "<b>Number of reads</b>",
                          font = list(size = 13, family = "Arial")),
-        range     = c(0, max_y),
         showgrid  = TRUE,
         gridcolor = "#e0e0e0",
         tickfont  = list(size = 11, family = "Arial", color = "#333333")
@@ -145,7 +146,7 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
         y           = 0.95
       )
     ) %>%
-    plotly::config(displayModeBar = "hover")
+    plotly::config(displayModeBar = "hover"))
   
   return(qual_plot)
 }

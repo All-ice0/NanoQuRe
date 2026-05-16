@@ -80,7 +80,7 @@ plot_cumulative_yield(params$data)
 
 ## Quality Distribution
 This plot illustrates the distribution of read counts relative to their mean Q-score. The orange vertical line indicates a cut-off (set to Q7), while the color coding differentiates reads based on the manufacturer’s internal 'passed filtering' criteria (Pass/Fail). The secondary peak observed at lower values is characteristic of background noise, adapter dimers, or low-quality fragmentary sequences that failed basecalling thresholds.
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning = FALSE}
 plot_quality_distribution(params$data)
 ```
 

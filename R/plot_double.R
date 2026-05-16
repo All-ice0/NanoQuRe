@@ -6,11 +6,8 @@
 #'
 #' @param seq_summary A dataframe containing the sequencing summary
 #'
-#' @returns A named list with two plotly objects:
-#'   \describe{
-#'     \item{length_plot}{Read length (bp) over time, y-axis on log scale}
-#'     \item{qscore_plot}{Mean Q-score over time}
-#'   }
+#' @returns A named list with two plotly objects
+#'
 #' @import dplyr
 #' @importFrom plotly plot_ly add_lines layout
 #' @importFrom assertthat assert_that
