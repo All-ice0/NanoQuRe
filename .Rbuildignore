@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^NQR_drafts$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

@@ -6,3 +6,4 @@
 # Generated reports — too large for GitHub
 inst/rmd/*.html
 *.html
+docs
