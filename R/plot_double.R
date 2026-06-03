@@ -12,7 +12,6 @@
 #' }
 #' @import dplyr
 #' @importFrom plotly plot_ly add_lines layout
-#' @importFrom assertthat assert_that
 #' @export
 plot_double <- function(seq_summary) {
   

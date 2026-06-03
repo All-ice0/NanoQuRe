@@ -22,7 +22,8 @@ Imports:
     rmarkdown,
     scales, 
     plotly, 
-    data.table
+    data.table, 
+    readr
 Suggests:
   testthat, 
   knitr,

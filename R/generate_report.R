@@ -18,12 +18,31 @@
 #' }
 generate_report <- function(..., output_file = "NanoQuRe_Report.html") {
   
-  seq_summary <- dplyr::bind_rows(...)
+  inputs <- list(...)
   
-  if (nrow(seq_summary) == 0)
-    stop("The input data frame is empty")
-  if (!("sample_id" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sample_id' column")
+  # Accept either a file path (string) or an in-memory data frame
+  parsed <- lapply(inputs, function(x) {
+    if (is.character(x) && length(x) == 1) {
+      if (!file.exists(x)) {
+        stop("File not found: ", x)
+      }
+      readr::read_tsv(x, show_col_types = FALSE)
+    } else if (is.data.frame(x)) {
+      x
+    } else {
+      stop("Each input must be either a file path (string) or a data frame.")
+    }
+  })
+  
+  seq_summary <- dplyr::bind_rows(parsed)
+  
+  if (nrow(seq_summary) == 0) {
+    stop("The input data frame is empty.")
+  }
+  
+  if (!"sample_id" %in% names(seq_summary)) {
+    stop("The data frame is missing the 'sample_id' column.")
+  }
   
   n_samples <- dplyr::n_distinct(seq_summary$sample_id)
   
@@ -33,8 +52,9 @@ generate_report <- function(..., output_file = "NanoQuRe_Report.html") {
     system.file("rmd", "report_multiple.Rmd", package = "NanoQuRe")
   }
   
-  if (nchar(template) == 0)
+  if (nchar(template) == 0) {
     stop("Report template not found. Make sure the package is installed correctly.")
+  }
   
   output <- rmarkdown::render(
     input       = template,
