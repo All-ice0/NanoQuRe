@@ -17,13 +17,16 @@ LazyData: true
 URL: https://github.com/All-ice0/NanoQuRe
 BugReports: https://github.com/All-ice0/NanoQuRe/issues
 RoxygenNote: 7.3.3
-Imports: 
+Imports:
     dplyr,
+    ggplot2,
+    readr,
     rmarkdown,
-    scales, 
-    plotly, 
-    data.table, 
-    readr
+    knitr,
+    scales,
+    DT,
+    plotly,
+    data.table
 Suggests:
   testthat, 
   knitr,
