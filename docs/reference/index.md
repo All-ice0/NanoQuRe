@@ -1,0 +1,57 @@
+# Package index
+
+## Report Generation
+
+Generate a full HTML QC report
+
+- [`generate_report()`](https://All-ice0.github.io/NanoQuRe/reference/generate_report.md)
+  : Generate Report
+
+## Summary Tables
+
+Functions that return summary data frames
+
+- [`sequencing_stats()`](https://All-ice0.github.io/NanoQuRe/reference/sequencing_stats.md)
+  : Sequencing Stats
+- [`quality_stats()`](https://All-ice0.github.io/NanoQuRe/reference/quality_stats.md)
+  : Quality Stats
+- [`calculate_n50()`](https://All-ice0.github.io/NanoQuRe/reference/calculate_n50.md)
+  : Calculate N50
+
+## Yield & Throughput Plots
+
+Plots showing sequencing output over time
+
+- [`plot_cumulative_yield()`](https://All-ice0.github.io/NanoQuRe/reference/plot_cumulative_yield.md)
+  : Plot Cumulative Yield
+- [`plot_seq_throughput()`](https://All-ice0.github.io/NanoQuRe/reference/plot_seq_throughput.md)
+  : Plot Seq Throughput
+- [`plot_average_speed()`](https://All-ice0.github.io/NanoQuRe/reference/plot_average_speed.md)
+  : Plot Average Speed
+
+## Quality & Length Plots
+
+Plots showing read quality and length distributions
+
+- [`plot_read_lengths()`](https://All-ice0.github.io/NanoQuRe/reference/plot_read_lengths.md)
+  : Plot Read Lengths
+- [`plot_quality_distribution()`](https://All-ice0.github.io/NanoQuRe/reference/plot_quality_distribution.md)
+  : Plot Quality Distribution
+
+## Channel Activity Plots
+
+Plots showing pore and channel behaviour
+
+- [`plot_active_channels()`](https://All-ice0.github.io/NanoQuRe/reference/plot_active_channels.md)
+  : Plot Active Channels
+- [`pore_activity_heatmap()`](https://All-ice0.github.io/NanoQuRe/reference/pore_activity_heatmap.md)
+  : Pore Activity Heatmap
+- [`plot_double()`](https://All-ice0.github.io/NanoQuRe/reference/plot_double.md)
+  : Plot Length and Q-score Over Time
+
+## Example Data
+
+Bundled dataset for examples and vignettes
+
+- [`sample_data`](https://All-ice0.github.io/NanoQuRe/reference/sample_data.md)
+  : Example Sequencing Summary
