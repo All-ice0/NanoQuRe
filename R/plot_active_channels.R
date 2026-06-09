@@ -18,7 +18,7 @@
 #' @examples
 #' plot_active_channels(sample_data)
 plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
-  
+
   # --- Validation ---
   if (nrow(seq_summary) == 0)
     stop("The input data frame is empty")
@@ -34,10 +34,10 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
     stop("Column 'start_time' must be numeric")
   if (!is.numeric(seq_summary$duration))
     stop("Column 'duration' must be numeric")
-  
+
   # --- Data prep ---
   sample_name <- dplyr::first(seq_summary$sample_id)
-  
+
   sorted_by_channel <- seq_summary %>%
     dplyr::group_by(channel) %>%
     dplyr::summarise(
@@ -51,11 +51,11 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
       inactive_channels = cumsum(event),
       active_channels   = channel_no_start - inactive_channels
     )
-  
+
   initial_channels <- dplyr::first(sorted_by_channel$channel_no_start)
   x_max            <- max(sorted_by_channel$last_activity)
   y_max            <- initial_channels
-  
+
   # --- Base plot ---
   channel_plot <- plotly::plot_ly() %>%
     plotly::add_lines(
@@ -66,29 +66,29 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
       line          = list(color = "#612a78", width = 2.5),
       hovertemplate = "Time: %{x:.2f} h<br>Active channels: %{y}<extra></extra>"
     )
-  
+
   # --- Threshold lines and annotations ---
   annotations   <- list()
   missed_labels <- c()
-  
+
   for (thr in sort(thresholds, decreasing = TRUE)) {
-    
+
     thr_count <- round(initial_channels * thr)
-    
+
     crossing_time <- sorted_by_channel %>%
       dplyr::filter(active_channels <= thr_count) %>%
       dplyr::slice(1) %>%
       dplyr::pull(last_activity)
-    
+
     if (length(crossing_time) == 0) {
       missed_labels <- c(missed_labels, paste0(thr * 100, "%"))
       next
     }
-    
+
     thr_label <- paste0(
       thr * 100, "% of initial active channels"
     )
-    
+
     channel_plot <- channel_plot %>%
       plotly::add_lines(
         x             = c(crossing_time, crossing_time),
@@ -98,12 +98,12 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
         hovertemplate = paste0(thr_label, "<extra></extra>")
       )
   }
-  
+
   # --- Warning annotation if any threshold was not reached ---
   if (length(missed_labels) > 0) {
-    
+
     missed_str <- paste(missed_labels, collapse = " and ")
-    
+
     annotations <- list(list(
       x           = x_max * 0.5,
       y           = y_max * 0.15,
@@ -121,7 +121,7 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
       opacity     = 0.92
     ))
   }
-  
+
   # --- Layout ---
   channel_plot <- channel_plot %>%
     plotly::layout(
@@ -157,6 +157,6 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
         font        = list(size = 11, family = "Arial")
       )
     )
-  
+
   return(channel_plot)
 }
